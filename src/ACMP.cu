@@ -387,11 +387,13 @@ __device__ float ComputeBilateralNCC(const cudaTextureObject_t ref_image, const 
 
         const float kMinVar = 1e-5f;
         if (var_ref < kMinVar || var_src < kMinVar) {
-            return cost = cost_max;
+            cost = cost_max;
+            return cost;
         } else {
             const float covar_src_ref = sum_ref_src - sum_ref * sum_src;
             const float var_ref_src = sqrt(var_ref * var_src);
-            return cost = max(0.0f, min(cost_max, 1.0f - covar_src_ref / var_ref_src));
+            cost = max(0.0f, min(cost_max, 1.0f - covar_src_ref / var_ref_src));
+            return cost;
         }
     }
 }
@@ -1183,7 +1185,7 @@ void ACMP::RunPatchMatch()
 {
     const int width = cameras[0].width;
     const int height = cameras[0].height;
-    // std::cout << width << " " << height << std::endl;
+    std::cout << "Running PatchMatch with " << width << " " << height << ", " << M_PI << std::endl;
 
     int BLOCK_W = 32;
     int BLOCK_H = (BLOCK_W / 2);

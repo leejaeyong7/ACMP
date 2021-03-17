@@ -433,6 +433,7 @@ def processing_single_scene(args):
                     f.write(str(intrinsic[images[i+1].camera_id][j, k]) + ' ')
                 f.write('\n')
             f.write('\n%f %f %f %f\n' % (depth_ranges[i+1][0], depth_ranges[i+1][1], depth_ranges[i+1][2], depth_ranges[i+1][3]))
+
     with open(os.path.join(args.save_folder, 'pair.txt'), 'w') as f:
         f.write('%d\n' % len(images))
         for i, sorted_score in enumerate(view_sel):
