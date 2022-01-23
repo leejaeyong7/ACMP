@@ -103,7 +103,7 @@ ACMP::~ACMP()
     delete[] plane_hypotheses_host;
     delete[] costs_host;
 
-    for (int i = 0; i < num_images; ++i) {
+    for (size_t i = 0; i < num_images; ++i) {
         cudaDestroyTextureObject(texture_objects_host.images[i]);
         cudaFreeArray(cuArray[i]);
     }

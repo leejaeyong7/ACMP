@@ -1,5 +1,6 @@
 import boto3
 import json
+from tqdm import tqdm
 from botocore.config import Config
 
 class S3Client:
@@ -47,6 +48,6 @@ class S3Client:
         images = self.get_images(project_id, pointcloud_id)
         image_path = local_path /  'images'
         image_path.mkdir(exist_ok=True, parents=True)
-        for image in images:
+        for image in tqdm(list(images)):
             s3_path = f'{project_id}/PointCloud/{pointcloud_id}/undistorted/{image}'
             self.client.download_file(self.settings['bucket'], s3_path, str(image_path/ image))

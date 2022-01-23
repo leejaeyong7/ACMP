@@ -161,25 +161,25 @@ def parse_nvm(nvm_file):
         compute_depth_ranges(camera, points)
 
     # compute scores
-    # cids = list(cameras.keys())
-    # score_maps = np.zeros((len(cids), len(cids)))
+    cids = list(cameras.keys())
+    score_maps = np.zeros((len(cids), len(cids)))
 
-    # func = partial(calc_score, cameras=cameras, points=points)
-    # queue = []
-    # for ref_cid in cids:
-    #     for src_cid in cids[ref_cid + 1:]:
-    #         queue.append((ref_cid, src_cid))
-    # result = process_map(func, queue, max_workers=mp.cpu_count(), chunksize=mp.cpu_count())
-    # for (ref_cid, src_cid, score) in result:
-    #     score_maps[ref_cid, src_cid] = score
-    #     score_maps[src_cid, ref_cid] = score
+    func = partial(calc_score, cameras=cameras, points=points)
+    queue = []
+    for ref_cid in cids:
+        for src_cid in cids[ref_cid + 1:]:
+            queue.append((ref_cid, src_cid))
+    result = process_map(func, queue, max_workers=mp.cpu_count(), chunksize=mp.cpu_count())
+    for (ref_cid, src_cid, score) in result:
+        score_maps[ref_cid, src_cid] = score
+        score_maps[src_cid, ref_cid] = score
 
 
 
-    # num_view = min(20, len(cids) - 1)
-    # for cid in cids:
-    #     sorted_score = np.argsort(score_maps[cid])[::-1]
-    #     # cameras[cid]['src_ids'] = [(src_id, score_maps[cid, src_id]) for src_id in sorted_score[:num_view] if score_maps[cid, src_id] > 0]
+    num_view = min(20, len(cids) - 1)
+    for cid in cids:
+        sorted_score = np.argsort(score_maps[cid])[::-1]
+        cameras[cid]['src_ids'] = [(src_id, score_maps[cid, src_id]) for src_id in sorted_score[:num_view] if score_maps[cid, src_id] > 0]
 
     return cameras, points
 
@@ -240,7 +240,7 @@ def main(args):
     img_dir.mkdir(exist_ok=True)
 
     # write pair file
-    # write_pair_file(pair_path, cameras)
+    write_pair_file(pair_path, cameras)
     for cid, camera in cameras.items():
         cam_path  = cam_dir / f'{cid:08d}_cam.txt'
         img_path = img_dir / f'{cid:08d}.jpg'
